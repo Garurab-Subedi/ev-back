@@ -33,6 +33,10 @@ app.use("/api/stations", stationsRoute);
 // app.use("/api/users", usersRoute);
 app.use("/api/chagers", chagersRoute);
 
+app.get("/", (req, res) => {
+  res.send("This is ev back server working fine");
+});
+
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
   const errorMessage = err.message || "Something went wrong!";
