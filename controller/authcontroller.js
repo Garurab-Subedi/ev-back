@@ -8,6 +8,7 @@ dotenv.config();
 
 const register = async (req, res) => {
   try {
+    console.log(req.body);
     // Generate salt and password
 
     if (req.body.password != null) {

@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+var cors = require("cors");
+
 const authRoute = require("./routes/auth");
 const chagersRoute = require("./routes/chagersRoutes");
 const stationsRoute = require("./routes/stationRoutes");
@@ -11,6 +13,11 @@ const cookieParser = require("cookie-parser");
 dotenv.config();
 
 const app = express();
+//middleware
+app.use(cookieParser());
+app.use(express.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 
 const connect = async () => {
   try {
@@ -25,9 +32,6 @@ const connect = async () => {
   }
 };
 
-//middleware
-app.use(cookieParser());
-app.use(express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/stations", stationsRoute);
 // app.use("/api/users", usersRoute);
