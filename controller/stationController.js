@@ -2,7 +2,13 @@ const Station = require("../models/stationModel");
 
 const createStation = async (req, res, next) => {
   const newStation = new Station(req.body);
-
+  if (req.onlyAdmin) {
+    res.json({
+      message: "Only Admin Can do this",
+      status: "Error",
+    });
+    return;
+  }
   try {
     const savedStation = await newStation.save();
     res.status(201).json(savedStation);
@@ -15,6 +21,13 @@ const createStation = async (req, res, next) => {
 };
 
 const updateStation = async (req, res, next) => {
+  if (req.onlyAdmin) {
+    res.json({
+      message: "Only Admin Can do this",
+      status: "Error",
+    });
+    return;
+  }
   try {
     const updateStation = await Station.findByIdAndUpdate(
       req.params.id,

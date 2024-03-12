@@ -2,6 +2,13 @@ const User = require("../models/userModel");
 
 const updateUser = async (req, res, next) => {
   try {
+    if (req.onlyManager) {
+      res.json({
+        message: "Only Sattion Manager Can do this",
+        status: "Error",
+      });
+      return;
+    }
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },

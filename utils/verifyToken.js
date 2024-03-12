@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { createError } = require("../utils/error");
 const dotenv = require("dotenv");
-const Role = require("../utils/role");
 const User = require("../models/userModel");
 
 dotenv.config();
@@ -13,7 +11,7 @@ const verifyToken = (req, res, next) => {
 
   if (token) {
     token = token.replace(/^Bearer\s+/, "");
-    console.log("Token Found " + token);
+    // console.log("Token Found " + token);
 
     //we have to verify the token (jsonwebtokens)
     //token
@@ -29,8 +27,8 @@ const verifyToken = (req, res, next) => {
         });
       }
       //Create req data
-      // req.data = data;
-      //console.log("This is checking id inside data "+data.id)
+      req.data = data;
+      console.log("This is checking id inside data " + data.id);
       const userResult = await User.findById(data.id);
       req.role = userResult.isAdmin;
       console.log("role " + req.role);
@@ -43,13 +41,22 @@ const verifyToken = (req, res, next) => {
       status: "error",
     });
   }
+  // if (!token) {
+  //   return next(createError(401, "You are not authenticated!"));
+  // }
+
+  // jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  //   if (err) return next(createError(403, "Token is not valid!"));
+  //   req.user = user;
+  //   next();
+  // });
 };
 
 //Use the token for authorization roles check if user is admin or not
 const verifyTokenWithAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
     if (req.role != undefined) {
-      console.log("Request Data is not undefined");
+      // console.log("Request Data is not undefined");
       //var id = req.data.id;
       //we are gonna use the id to find the user in the database
       //We imort the user schema because we are making use of it to find out user in the database
@@ -76,31 +83,37 @@ const verifyTokenWithAuthorization = (req, res, next) => {
 };
 
 const verifyTokenWithManager = (req, res, next) => {
-  verifyToken(req, res, () => {
-    if (req.role != undefined) {
-      console.log("Request Data is not undefined");
-      //var id = req.data.id;
-      //we are gonna use the id to find the user in the database
-      //We imort the user schema because we are making use of it to find out user in the database
+  // verifyToken(req, res, () => {
+  //   if (req.role != undefined) {
+  //     // console.log("Request Data is not undefined");
+  //     //var id = req.data.id;
+  //     //we are gonna use the id to find the user in the database
+  //     //We imort the user schema because we are making use of it to find out user in the database
 
-      //Check if the user is admin
-      var isManager = req.role;
-      if (isManager) {
-        console.log("This is Admin " + isManager);
-        next();
-      } else {
-        console.log("Only Station Manger CAN UPLOAD");
-        req.onlyManger  = true;
-        next();
-        // next();
-      }
-
+  //     //Check if the user is admin
+  //     var isManager = req.role;
+  //     if (isManager) {
+  //       console.log("This is StatioN Manager " + isManager);
+  //       next();
+  //     } else {
+  //       console.log("Only Station Manger CAN UPLOAD");
+  //       req.onlyManager = true;
+  //       next();
+  //       // next();
+  //     }
+  //   } else {
+  //     console.log("Request Data is undefined");
+  //     return res.json({
+  //       message: "Invalid User",
+  //       status: "Error",
+  //     });
+  //   }
+  // });
+  verifyToken(req, res, next, () => {
+    if (req.user.isManager) {
+      next();
     } else {
-      console.log("Request Data is undefined");
-      return res.json({
-        message: "Invalid User",
-        status: "Error",
-      });
+      return next(createError(403, "You are not authorized!"));
     }
   });
 };

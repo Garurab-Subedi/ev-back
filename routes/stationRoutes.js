@@ -8,14 +8,14 @@ const {
   deleteStation,
   getStation,
   getStations,
-} = require("../controller/stationController"); 
+} = require("../controller/stationController");
 
 //create
 router.post("/", Token.verifyTokenWithAuthorization, createStation);
 //update
 router.put("/:id", Token.verifyTokenWithAuthorization, updateStation);
 //delete
-router.delete("/:id",Token.verifyTokenWithAuthorization, deleteStation);
+router.delete("/:id", Token.verifyTokenWithAuthorization, deleteStation);
 //get
 router.get("/:id", getStation);
 //get all

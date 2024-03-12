@@ -34,7 +34,7 @@ const connect = async () => {
 
 app.use("/api/auth", authRoute);
 app.use("/api/stations", stationsRoute);
-// app.use("/api/users", usersRoute);
+app.use("/api/users", usersRoute);
 app.use("/api/chagers", chagersRoute);
 
 app.get("/", (req, res) => {
